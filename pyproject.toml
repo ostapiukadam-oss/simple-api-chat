@@ -1,0 +1,23 @@
+[project]
+name = "my-chat-openai"
+version = "0.1.0"
+description = "Desktopowy klient API OpenAI w Tkinterze"
+requires-python = ">=3.10"
+dependencies = [
+    "openai==3.40.0",
+    "ttkbootstrap==2.2.6",
+    "Pillow==12.3.0",
+    "Pygments==2.21.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+exclude = ["venv", ".venv", ".idea"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
