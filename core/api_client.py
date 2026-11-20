@@ -60,9 +60,7 @@ def to_chat_messages(history):
             if part_type == "input_text":
                 parts.append({"type": "text", "text": part["text"]})
             elif part_type == "input_image":
-                parts.append(
-                    {"type": "image_url", "image_url": {"url": part["image_url"]}}
-                )
+                parts.append({"type": "image_url", "image_url": {"url": part["image_url"]}})
             elif part_type == "input_file":
                 raise ValueError(
                     "Historia zawiera PDF. W tej aplikacji PDF-y są obsługiwane przez "
@@ -232,8 +230,7 @@ class OpenAIService:
                             response_usage = getattr(response, "usage", None)
                             if response_usage:
                                 usage_info = {
-                                    "input_tokens": getattr(response_usage, "input_tokens", 0)
-                                    or 0,
+                                    "input_tokens": getattr(response_usage, "input_tokens", 0) or 0,
                                     "output_tokens": getattr(response_usage, "output_tokens", 0)
                                     or 0,
                                 }
@@ -277,8 +274,7 @@ class OpenAIService:
             cost = None
             if prices is not None:
                 cost = (
-                    usage_info["input_tokens"] * prices[0]
-                    + usage_info["output_tokens"] * prices[1]
+                    usage_info["input_tokens"] * prices[0] + usage_info["output_tokens"] * prices[1]
                 ) / 1_000_000 + search_calls * WEB_SEARCH_CALL_USD
             usage_info.update(
                 {

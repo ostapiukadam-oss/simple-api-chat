@@ -56,9 +56,7 @@ class ChatDatabase:
 
     def _migrate(self):
         version = self.connection.execute("PRAGMA user_version").fetchone()[0]
-        columns = {
-            row[1] for row in self.connection.execute("PRAGMA table_info(conversations)")
-        }
+        columns = {row[1] for row in self.connection.execute("PRAGMA table_info(conversations)")}
         if "created_at" not in columns:
             self.connection.execute("ALTER TABLE conversations ADD COLUMN created_at TEXT")
         if "updated_at" not in columns:
@@ -153,9 +151,7 @@ class ChatDatabase:
         for index, (_message_id, role, serialized) in enumerate(rows):
             content = json.loads(serialized)
             if isinstance(content, list):
-                include_files = reuse_attachments or (
-                    last_pending_user and index == len(rows) - 1
-                )
+                include_files = reuse_attachments or (last_pending_user and index == len(rows) - 1)
                 parts = []
                 for part in content:
                     has_path = part.get("attachment_path") or (

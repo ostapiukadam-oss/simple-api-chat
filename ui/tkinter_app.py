@@ -12,7 +12,8 @@ import uuid
 import webbrowser
 from io import BytesIO
 from pathlib import Path
-from tkinter import filedialog, font as tkfont, messagebox, simpledialog, ttk
+from tkinter import filedialog, messagebox, simpledialog, ttk
+from tkinter import font as tkfont
 from tkinter.scrolledtext import ScrolledText
 from urllib.parse import urlsplit
 
@@ -46,7 +47,6 @@ from core.database import ChatDatabase, DatabaseError
 from core.image_generation import ImageGenerationService
 from core.pricing import PricingCatalog
 from core.security import protect_api_key, unprotect_api_key
-
 
 UI_COLORS = {
     "app": "#f3f6fa",
@@ -2721,7 +2721,7 @@ class ChatApp(tb.Window):
 
         status_var = tk.StringVar(
             value=(
-                "Generowanie może wiązać się z opłatą API; obrazy referencyjne będą wysłane do OpenAI."
+                "Generowanie może wiązać się z opłatą API; obrazy referencyjne wyślemy do OpenAI."
                 if not english
                 else "Generation may incur API charges; reference images are sent to OpenAI."
             )
@@ -2894,7 +2894,7 @@ class ChatApp(tb.Window):
                     parent=dialog,
                 )
                 return
-            status_var.set((f"Zapisano: {target}" if not english else f"Saved: {target}"))
+            status_var.set(f"Zapisano: {target}" if not english else f"Saved: {target}")
 
         save_button.configure(command=save_generated_image)
 
@@ -2948,13 +2948,16 @@ class ChatApp(tb.Window):
             preview_canvas.xview_moveto(0)
             preview_canvas.yview_moveto(0)
             save_button.configure(state="normal")
-            status_var.set(
-                (
-                    f"Gotowe • {dimensions} • przeciągnij obraz lub użyj pasków przewijania; dwuklik powiększa"
-                    if not english
-                    else f"Ready • {dimensions} • drag or use the scrollbars; double-click to enlarge"
+            if not english:
+                status_message = (
+                    f"Gotowe • {dimensions} • przeciągnij obraz lub użyj pasków "
+                    "przewijania; dwuklik powiększa"
                 )
-            )
+            else:
+                status_message = (
+                    f"Ready • {dimensions} • drag or use scrollbars; double-click to enlarge"
+                )
+            status_var.set(status_message)
 
         def start_generation():
             prompt = prompt_box.get("1.0", "end-1c").strip()
@@ -2981,15 +2984,13 @@ class ChatApp(tb.Window):
             generated["format"] = None
             show_preview_message("Generowanie…" if not english else "Generating…")
             status_var.set(
-                (
-                    "Edytowanie na podstawie obrazu…"
-                    if reference_images and not english
-                    else "Editing from reference image(s)…"
-                    if reference_images
-                    else "Łączenie z OpenAI Images API…"
-                    if not english
-                    else "Requesting image from OpenAI…"
-                )
+                "Edytowanie na podstawie obrazu…"
+                if reference_images and not english
+                else "Editing from reference image(s)…"
+                if reference_images
+                else "Łączenie z OpenAI Images API…"
+                if not english
+                else "Requesting image from OpenAI…"
             )
             generate_button.configure(state="disabled")
             request = {
