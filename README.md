@@ -9,6 +9,7 @@ A lightweight Windows desktop client for the OpenAI API, built with Python and T
 - Use your own OpenAI API key and choose an available model.
 - Stream responses in the chat window.
 - Search the web with the Responses API.
+- Generate images from a prompt or edit up to 16 reference images with the OpenAI Images API; preview and save results as PNG, JPEG, or WebP.
 - Attach multiple files and images.
 - Keep conversation history in a local SQLite database.
 - View token usage, estimated costs, response time, model, and request details.
@@ -34,6 +35,21 @@ python main.py
 
 In PyCharm, select `.venv` as the interpreter and run `main.py`.
 
+## Project structure
+
+- `main.py` starts the application.
+- `ui/` contains the current Tkinter interface and presentation code.
+- `core/database.py` owns SQLite schema, migrations, and conversation persistence.
+- `core/api_client.py` handles OpenAI requests and model compatibility.
+- `core/image_generation.py` generates images through the OpenAI Images API.
+- `core/attachments.py` reads, encodes, and stores attachments.
+- `core/pricing.py` loads model price estimates.
+- `core/security.py` protects the saved API key with Windows DPAPI.
+- `core/config.py` contains application paths, limits, and defaults.
+
+The `core/` package has no Tkinter dependency, so another interface can be added
+under `ui/` while reusing the same persistence and API services.
+
 ## Build the executable
 
 From PowerShell in the project directory:
@@ -52,6 +68,7 @@ Application data is stored in `%USERPROFILE%\myChat`:
 - Conversations: `rozmowy.sqlite3` (the database is not encrypted).
 - Saved API key: `api_key.dpapi`, protected with Windows DPAPI for the current Windows user.
 - Attachments: `attachments\` and pasted clipboard images: `clipboard_images\`.
+- Generated images are saved in the location you choose (the save dialog starts in `generated_images\`).
 - Editable model price estimates: `pricing.json`.
 
 The app can also read the `OPENAI_API_KEY` environment variable. The executable does not include the saved key file. Message text and current attachments are sent to the API when you make a request; previous attachments are not automatically sent again with later messages.
@@ -59,7 +76,9 @@ The app can also read the `OPENAI_API_KEY` environment variable. The executable 
 ## Limits and notes
 
 - Maximum individual attachment size: 10 MB; maximum total attachment size per message: 20 MB.
+- Image editing accepts up to 16 reference images; this app limits them to 10 MB each and 20 MB total.
 - Web search requires the Responses API and may incur additional charges.
+- Image generation uses the OpenAI API and may incur charges on your API account.
 - Cost figures are estimates based on the local pricing table; they are not a substitute for your OpenAI account usage page.
 - A DPAPI-protected key is available to the same Windows user on the same computer.
 
